@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Chatbot with Frontend</title>
+  </head>
+  <body>
+    <ul id="messages"></ul>
+    <form id="message-form">
+      <input id="message-input" autocomplete="off" />
+      <button>Send</button>
+    </form>
+
+    <script>
+      const socket = io('http://localhost:3000');
+
+      const messages = document.getElementById('messages');
+      const messageForm = document.getElementById('message-form');
+      const messageInput = document.getElementById('message-input');
+
+      messageForm.addEventListener('submit', e => {
+        e.preventDefault();
+        const message = messageInput.value;
+        messages.innerHTML += `<li>You: ${message}</li>`;
+        socket.emit('chat message', message);
+        messageInput.value = '';
+      });
+
+      socket.on('chat message', message => {
+        messages.innerHTML += `<li>Bot: ${message}</li>`;
+      });
+    </script>
+  </body>
+</html>
